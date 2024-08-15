@@ -30,7 +30,7 @@ jobs:
       - name: Run ESLint
         run: |
           cd */frontend
-          npm run lint
+          npm lint
   test:
     runs-on: ubuntu-latest
     steps:
@@ -44,7 +44,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd */frontend
-          npm run lint
+          npm test
 
       - name: Run tests
         run: |
