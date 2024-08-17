@@ -113,6 +113,7 @@ jobs:
       - name: Build Docker image
         run: |
           cd ./starter/frontend
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --
           docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 -t $IMAGE_REPO_NAME:$IMAGE_TAG .          
           docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
