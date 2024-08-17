@@ -24,8 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd ./starter/frontend
-          nvm use
-          npm install
+          npm ci
 
       - name: Run tests
         run: |
@@ -44,7 +43,6 @@ jobs:
       - name: Install dependencies
         run: |
           cd ./starter/frontend
-          nvm use
           npm ci
 
       - name: Run ESLint
