@@ -85,6 +85,8 @@ jobs:
     env:
       AWS_ACCOUNT_ID: 155241587390
       AWS_REGION: us-east-1
+      IMAGE_REPO_NAME: mp-frontend
+      IMAGE_TAG: latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -111,9 +113,9 @@ jobs:
       - name: Build Docker image
         run: |
           cd ./starter/frontend
-          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 -t mp-frontend:latest .          
-          docker tag mp-frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.
-          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/mp-frontend:latest
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 -t $IMAGE_REPO_NAME:$IMAGE_TAG .          
+          docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
 
 #  deploy:
 #    runs-on: ubuntu-latest
