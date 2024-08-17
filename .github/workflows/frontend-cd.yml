@@ -118,7 +118,7 @@ jobs:
     steps:
       - name: Push Docker image to ECR
         run: |
-          docker push ${{ AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/mp-frontend:latest
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/mp-frontend:latest
 
 #  deploy:
 #    runs-on: ubuntu-latest
