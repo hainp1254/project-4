@@ -45,6 +45,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pip install flake8
           cd ./starter/backend
           pipenv install
 
@@ -67,7 +68,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install flake8
           cd ./starter/backend
           pipenv install
 
