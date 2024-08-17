@@ -1,0 +1,89 @@
+name: CI Front End
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+
+  pull_request:
+    branches:
+      - main
+      -
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Install dependencies
+        run: |
+          cd */frontend
+          npm install
+
+      - name: Run ESLint
+        run: |
+          cd */frontend
+          npm lint
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Install dependencies
+        run: |
+          cd */frontend
+          npm test
+
+      - name: Run tests
+        run: |
+          cd */frontend
+          npm test
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: |
+          cd */frontend
+          docker build -t project-4-frontend-app:${{ github.sha }} .
+
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: your-region  # Set your AWS region
+      AWS_ACCOUNT_ID: your-account-id  # Set your AWS account ID
+      AWS_ECR_NAME: my-frontend-app  # Set your ECR repository name
+    needs: build  # This job will run only if the build job succeeds
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push Docker image to ECR
+        run: |
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          docker tag project-4-frontend-app:${{ github.sha }} ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.your-region.amazonaws.com/${{ env.AWS_ECR_NAME }}:${{ github.sha }}
+          docker push your-account-id.dkr.ecr.your-region.amazonaws.com/my-frontend-app:${{ github.sha }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/movie-picture-deployment.yaml
