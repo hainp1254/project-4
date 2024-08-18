@@ -72,7 +72,7 @@ jobs:
     needs: [lint, test]
     env:
       TAG_NAME: ${{ github.sha }}
-      $IMAGE_REPO_NAME: mp-frontend
+      IMAGE_REPO_NAME: mp-frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
