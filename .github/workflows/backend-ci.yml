@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint, test]
     env:
-      $IMAGE_TAG: ${{ github.sha }}
+      IMAGE_TAG: ${{ github.sha }}
       IMAGE_REPO_NAME: mp-backend
     steps:
       - name: Checkout code
