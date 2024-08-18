@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint, test]
     env:
-      TAG_NAME: ${{ github.sha }}
+      IMAGE_TAG: ${{ github.sha }}
       IMAGE_REPO_NAME: mp-frontend
     steps:
       - name: Checkout code
@@ -99,4 +99,4 @@ jobs:
       - name: Build Docker image
         run: |
           cd ./starter/frontend
-          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --cache-from=$IMAGE_REPO_NAME:$IMAGE_TAG -t $IMAGE_REPO_NAME:${{ github.sha }} .
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --cache-from=$IMAGE_REPO_NAME:$IMAGE_TAG -t $IMAGE_REPO_NAME:$IMAGE_TAG .
