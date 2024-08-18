@@ -75,9 +75,12 @@ jobs:
       AWS_ACCOUNT_ID: 155241587390
       AWS_REGION: ${{ secrets.AWS_REGION }}
       IMAGE_REPO_NAME: mp-frontend
-      IMAGE_TAG: latest
       EKS_CLUSTER_NAME: project-4-cluster
     steps:
+      - name: Set short git commit SHA
+        id: commit
+        uses: prompt/actions-commit-hash@v2
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -111,6 +114,9 @@ jobs:
 #        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build Docker image
+        env:
+          IMAGE_TAG: ${{ steps.commit.outputs.short }}
+
         run: |
           cd ./starter/frontend
           docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --cache-from=$IMAGE_REPO_NAME:$IMAGE_TAG -t $IMAGE_REPO_NAME:$IMAGE_TAG .
