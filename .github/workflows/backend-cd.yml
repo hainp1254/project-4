@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_ACCOUNT_ID: 155241587390
+  AWS_ACCOUNT_ID: 339712711573
   AWS_REGION: ${{ secrets.AWS_REGION }}
   IMAGE_REPO_NAME: mp-backend
   EKS_CLUSTER_NAME: eks-cluster
@@ -90,16 +90,17 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build Docker image
         env:
           IMAGE_TAG: ${{ steps.commit.outputs.short }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           cd ./starter/backend
           docker build --cache-from=$IMAGE_REPO_NAME:$IMAGE_TAG -t $IMAGE_REPO_NAME:$IMAGE_TAG .
-          docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+          docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
 
 #      - name: deploy
 #        run: |
