@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint, test]
     env:
-      AWS_ACCOUNT_ID: 155241587390
+      AWS_ACCOUNT_ID: 339712711573
       AWS_REGION: ${{ secrets.AWS_REGION }}
       IMAGE_REPO_NAME: mp-frontend
       EKS_CLUSTER_NAME: project-4-cluster
