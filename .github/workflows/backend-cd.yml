@@ -13,7 +13,7 @@ env:
   AWS_ACCOUNT_ID: 339712711573
   AWS_REGION: ${{ secrets.AWS_REGION }}
   IMAGE_REPO_NAME: mp-backend
-  EKS_CLUSTER_NAME: eks-cluster
+  EKS_CLUSTER_NAME: cluster
 
 jobs:
   test:
@@ -103,8 +103,8 @@ jobs:
           docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
 
-#      - name: deploy
-#        run: |
-#          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
-#          kustomize edit set image frontend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-#          kustomize build | kubectl apply -f -
+      - name: deploy
+        run: |
+          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+          kustomize edit set image frontend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+          kustomize build | kubectl apply -f -
