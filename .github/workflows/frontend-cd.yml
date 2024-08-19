@@ -76,6 +76,7 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       IMAGE_REPO_NAME: mp-frontend
       EKS_CLUSTER_NAME: project-4-cluster
+      BACK_END_URL: abc
     steps:
       - name: Set short git commit SHA
         id: commit
@@ -119,7 +120,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           cd ./starter/frontend
-          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --cache-from=$IMAGE_REPO_NAME:$IMAGE_TAG -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=$BACK_END_URL --cache-from=$IMAGE_REPO_NAME:$IMAGE_TAG -t $IMAGE_REPO_NAME:$IMAGE_TAG .
           docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
           docker push $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
 
