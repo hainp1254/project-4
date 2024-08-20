@@ -1,18 +1,14 @@
 name: CI Front End
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
   workflow_dispatch:
-
 env:
-  AWS_ACCOUNT_ID: 339712711573
+  AWS_ACCOUNT_ID: 155241587390
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  IMAGE_REPO_NAME: mp-backend
+  IMAGE_REPO_NAME: backend
   EKS_CLUSTER_NAME: cluster
 
 jobs:
@@ -100,12 +96,21 @@ jobs:
         run: |
           cd ./starter/backend
           docker build --cache-from=$IMAGE_REPO_NAME:$IMAGE_TAG -t $IMAGE_REPO_NAME:$IMAGE_TAG .
-          docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+          docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
 
-      - name: deploy
+      - name: Add GitHub Action user to Kubernetes
+        run: |
+          cd setup
+          chmod +x init.sh 
+          ./init.sh
+
+      - name: Deploy backend
+        env:
+          IMAGE_TAG: ${{ steps.commit.outputs.short }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
           cd ./starter/backend/k8s
-          kustomize edit set image backend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+          kustomize edit set image backend=$ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
           kustomize build | kubectl apply -f -
