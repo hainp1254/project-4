@@ -10,7 +10,7 @@ env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   IMAGE_REPO_NAME: frontend
   EKS_CLUSTER_NAME: cluster
-  BACK_END_URL: http://
+  BACK_END_URL: http://a824f9c6367324786a71ba1659c28f49-874045228.us-east-1.elb.amazonaws.com
 jobs:
   test:
     runs-on: ubuntu-latest
