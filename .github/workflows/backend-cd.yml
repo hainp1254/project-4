@@ -99,11 +99,11 @@ jobs:
           docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
           docker push $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
 
-      - name: Add GitHub Action user to Kubernetes
-        run: |
-          cd setup
-          chmod +x init.sh 
-          ./init.sh
+#      - name: Add GitHub Action user to Kubernetes
+#        run: |
+#          cd setup
+#          chmod +x init.sh
+#          ./init.sh
 
       - name: Deploy backend
         env:
